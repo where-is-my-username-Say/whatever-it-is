@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="An educational journey through traditional Omani astronomy, navigation and falaj water management."><meta name="theme-color" content="#050818"><title>Under the Omani Stars</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--navy:#050818;--night:#0a0f2e;--plum:#261a5c;--gold:#f2c76e;--gold2:#ffe3a6;--amber:#ff9f4d;--teal:#46d6c8;--ink:#efedfa;--mute:#bab8d8;--line:rgba(242,199,110,.22);--r:20px;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:90px;-webkit-text-size-adjust:100%}
+body{margin:0;background:linear-gradient(180deg,#050818,#150f40 30%,#0c1236 60%,#1a1048 82%,#050818);color:var(--ink);font:18px/1.75 'Nunito Sans',system-ui,-apple-system,'Segoe UI',sans-serif;overflow-x:hidden}
+h1,h2,h3,.cin{font-family:'Cinzel',Georgia,serif;font-weight:700;letter-spacing:.06em}
+em{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.08em}
+a{color:var(--teal)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:8px}
+.skip{position:fixed;left:1rem;top:-4rem;z-index:99;background:var(--gold);color:#1a1040;padding:.6rem 1rem;border-radius:10px;font-weight:700;transition:.3s}
+.skip:focus{top:1rem}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;background:linear-gradient(90deg,var(--teal),var(--gold),var(--amber));transform-origin:0 50%;transform:scaleX(0);box-shadow:0 0 14px var(--gold)}
+/* navigation */
+.top{position:fixed;z-index:50;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translateX(-50%);width:min(1120px,calc(100% - 20px));display:flex;align-items:center;justify-content:space-between;padding:.5rem .55rem .5rem 1.2rem;border-radius:99px;background:rgba(10,12,40,.4);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:background .4s,box-shadow .4s}
+.top.sm{background:rgba(7,9,32,.85);box-shadow:0 12px 40px #0009}
+.brand{font:700 .82rem 'Cinzel',serif;letter-spacing:.2em;color:var(--gold);text-decoration:none;white-space:nowrap;text-shadow:0 0 14px #f2c76e66}
+.top nav{display:flex;gap:.1rem}
+.top nav a{display:flex;gap:.5rem;align-items:center;font:600 .68rem 'Cinzel',serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);text-decoration:none;padding:.6rem .9rem;border-radius:99px;transition:.3s}
+.top nav a b{color:var(--teal);font-weight:600}
+.top nav a:hover,.top nav a.on{color:#1a1040;background:linear-gradient(135deg,var(--gold),var(--gold2));box-shadow:0 0 18px #f2c76e66}
+.top nav a:hover b,.top nav a.on b{color:#1a1040}
+.burger{display:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:transparent;cursor:pointer;flex-direction:column;gap:5px;align-items:center;justify-content:center}
+.burger i{width:18px;height:2px;background:var(--gold);border-radius:2px;transition:.3s}
+.burger[aria-expanded=true] i:nth-child(1){transform:translateY(7px) rotate(45deg)}.burger[aria-expanded=true] i:nth-child(2){opacity:0}.burger[aria-expanded=true] i:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+@media(max-width:900px){.burger{display:flex}.top nav{position:absolute;top:calc(100% + 8px);left:0;right:0;flex-direction:column;padding:.6rem;border-radius:24px;background:rgba(7,9,32,.97);border:1px solid var(--line);opacity:0;visibility:hidden;transform:translateY(-8px);transition:.3s}.top nav.open{opacity:1;visibility:visible;transform:none}.top nav a{padding:.95rem 1.1rem;font-size:.8rem}}
+@media(max-width:420px){.brand{font-size:.68rem;letter-spacing:.12em}}
+/* sections */
+.sec{position:relative;z-index:2;max-width:1120px;margin:0 auto;padding:clamp(5.5rem,11vw,9rem) 1.3rem clamp(3rem,6vw,5rem)}
+.sec::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;margin-left:-50vw;pointer-events:none}
+.sec::after{content:attr(data-n);position:absolute;z-index:-1;top:clamp(3rem,7vw,5.5rem);right:.5rem;font:700 clamp(6rem,20vw,15rem)/1 'Cinzel',serif;color:transparent;-webkit-text-stroke:1px rgba(242,199,110,.13);pointer-events:none}
+#welcome::before{background:linear-gradient(180deg,transparent,rgba(110,80,220,.18) 20%,rgba(40,25,110,.25) 80%,transparent),radial-gradient(60% 30% at 85% 5%,rgba(160,130,255,.25),transparent)}
+#navigate::before{background:linear-gradient(180deg,transparent,rgba(15,50,120,.3) 20%,rgba(10,70,110,.3) 85%,transparent),radial-gradient(50% 25% at 10% 90%,rgba(70,214,200,.18),transparent)}
+#water::before{background:linear-gradient(180deg,transparent,rgba(10,90,110,.3) 20%,rgba(8,60,100,.35) 85%,transparent),radial-gradient(60% 30% at 50% 40%,rgba(70,214,200,.12),transparent)}
+#fading::before{background:linear-gradient(180deg,transparent,rgba(70,30,120,.3) 25%,rgba(120,60,90,.25) 85%,transparent),radial-gradient(60% 25% at 50% 100%,rgba(255,159,77,.18),transparent)}
+#preserve::before{background:linear-gradient(180deg,transparent,rgba(110,80,40,.18) 20%,rgba(50,30,100,.3) 85%,transparent),radial-gradient(60% 30% at 50% 0%,rgba(242,199,110,.18),transparent)}
+.reveal{opacity:0;transform:translateY(38px);transition:opacity 1s ease,transform 1s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.kick{display:inline-flex;align-items:center;gap:.8rem;font:600 .75rem 'Cinzel',serif;letter-spacing:.32em;color:var(--teal);text-transform:uppercase}
+.kick::before{content:"";width:36px;height:1px;background:linear-gradient(90deg,transparent,var(--teal))}
+h2{font-size:clamp(1.8rem,5vw,3.1rem);line-height:1.15;margin:.3em 0 .5em;background:linear-gradient(100deg,var(--gold2),var(--gold) 50%,#ffb85e);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px #f2c76e44);text-wrap:balance}
+h2::after{content:"";display:block;width:96px;height:3px;margin-top:.5em;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--teal),transparent)}
+.sec p{max-width:70ch;margin:.7rem 0;color:rgba(239,237,250,.92)}
+.sec>.reveal:first-child p:first-of-type{font-size:1.15rem;color:var(--ink)}
+strong{color:var(--gold2)}
+/* cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:1.1rem;margin:1.6rem 0}
+.card{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(48,36,120,.55),rgba(12,10,42,.72));border:1px solid var(--line);border-radius:var(--r);padding:1.4rem 1.5rem;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:transform .45s cubic-bezier(.2,.8,.2,1),border-color .4s,box-shadow .4s}
+.card::before{content:"";position:absolute;inset:0;background:radial-gradient(380px 140px at var(--mx,50%) -10%,rgba(242,199,110,.22),transparent);opacity:0;transition:opacity .4s;pointer-events:none}
+.card:hover{border-color:rgba(242,199,110,.7);box-shadow:0 18px 50px #0007,0 0 34px #f2c76e24;transform:translateY(-6px)}
+.card:hover::before{opacity:1}
+.card h3{margin:.1em 0 .45em;color:var(--gold);font-size:1.02rem;line-height:1.4}
+.card h3::before{content:"✦";color:var(--teal);margin-right:.55em;font-size:.8em}
+.card p{margin:0;font-size:1rem;max-width:none}
+/* hero */
+#hero{position:relative;z-index:2;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7rem 1.2rem 34vh;overflow:hidden}
+#hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(5,8,24,0) 0,rgba(38,26,92,.5) 55%,rgba(255,140,80,.3) 86%,rgba(10,8,40,.9) 100%)}
+#hero::after{content:"";position:absolute;z-index:-1;left:-25%;right:-25%;top:4%;height:60%;background:radial-gradient(closest-side,rgba(200,180,255,.3),rgba(120,100,220,.12) 55%,transparent);transform:rotate(-24deg) scaleY(.38);filter:blur(22px)}
+.moon{position:absolute;top:15%;right:13%;width:clamp(96px,13vw,170px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 62% 50%,rgba(130,120,210,.2),transparent 70%);box-shadow:inset -30px 8px 0 0 #fff0c8;filter:drop-shadow(0 0 30px #ffe8a8);transform:rotate(-18deg);animation:float 9s ease-in-out infinite}
+.moon::after{content:"";position:absolute;inset:-90%;border-radius:50%;background:radial-gradient(circle,rgba(255,230,160,.3),transparent 60%);z-index:-1}
+@keyframes float{50%{translate:0 -14px}}
+#hero h1{font-size:clamp(2.4rem,9vw,6.4rem);margin:.3em 0 0;line-height:1.04;letter-spacing:.1em;background:linear-gradient(90deg,#f2c76e,#fff3cf,#ffb85e,#f2c76e);background-size:300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 9s linear infinite;filter:drop-shadow(0 0 22px #f2c76e66)}
+@keyframes shine{to{background-position:300%}}
+#hero p{max-width:600px;color:var(--mute);font:italic 1.45rem/1.5 'Cormorant Garamond',Georgia,serif;margin:1.3rem auto 2.2rem}
+.btn{display:inline-block;font:700 .8rem 'Cinzel',serif;letter-spacing:.22em;color:#1a1040;background:linear-gradient(135deg,var(--gold),var(--gold2));border:0;border-radius:99px;padding:1rem 2.2rem;cursor:pointer;text-decoration:none;box-shadow:0 0 26px #f2c76e77;transition:.3s}
+.btn:hover{transform:translateY(-3px) scale(1.04);box-shadow:0 0 48px #f2c76ecc}
+.chips{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin-top:1.8rem}
+.chips a{font:600 .68rem 'Cinzel',serif;letter-spacing:.18em;color:var(--ink);text-decoration:none;padding:.55rem 1.1rem;border-radius:99px;border:1px solid var(--line);background:rgba(10,12,40,.45);backdrop-filter:blur(8px);transition:.3s}
+.chips a:hover{border-color:var(--teal);color:var(--teal);box-shadow:0 0 20px #46d6c855}
+.scroll{position:absolute;left:50%;bottom:36vh;translate:-50% 0;font:600 .65rem 'Cinzel',serif;color:var(--mute);letter-spacing:.35em;animation:float 3s infinite}
+.dunes{position:absolute;left:0;bottom:-1px;width:100%;height:min(56vh,540px);z-index:-1}
+/* star picker */
+.skybox{position:relative;height:clamp(300px,44vw,400px);border-radius:26px;overflow:hidden;border:1px solid var(--line);margin:1.6rem 0;background:radial-gradient(ellipse at 50% 125%,rgba(255,159,77,.35),transparent 55%),radial-gradient(circle at 20% 15%,rgba(120,90,220,.4),transparent 50%),linear-gradient(#070a28,#1b1458);box-shadow:inset 0 0 80px #0007,0 24px 60px #0006}
+.skybox::after{content:"";position:absolute;left:0;right:0;bottom:0;height:20%;background:#05061a;clip-path:polygon(0 55%,12% 30%,26% 60%,40% 25%,55% 55%,70% 20%,85% 50%,100% 30%,100% 100%,0 100%);pointer-events:none}
+.skybox button{position:absolute;width:38px;height:38px;transform:translate(-50%,-50%);border:0;background:radial-gradient(circle,#fff 0 12%,var(--gold) 28%,transparent 70%);border-radius:50%;cursor:pointer;animation:tw 2.6s ease-in-out infinite;filter:drop-shadow(0 0 10px var(--gold));z-index:2}
+.skybox button:nth-child(2n){animation-delay:.8s}.skybox button:nth-child(3n){animation-delay:1.5s}
+.skybox button.on{scale:1.6;filter:drop-shadow(0 0 22px #fff)}
+@keyframes tw{50%{opacity:.5;scale:.8}}
+.skybox>span:not(.sl){position:absolute;bottom:.7rem;left:0;right:0;text-align:center;font:600 .7rem 'Cinzel',serif;letter-spacing:.2em;color:var(--mute);z-index:3}
+.skybox .cl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.cl polyline{fill:none;stroke:rgba(242,199,110,.35);stroke-width:1;stroke-dasharray:4 6;vector-effect:non-scaling-stroke}
+.sl{position:absolute;transform:translate(-50%,24px);font:600 .64rem 'Cinzel',serif;letter-spacing:.08em;color:var(--gold2);white-space:nowrap;pointer-events:none;text-shadow:0 0 8px #000}
+@media(max-width:600px){.sl{display:none}}
+#info{border-left:3px solid var(--teal)}
+#info h3{font-size:1.4rem;margin:.1em 0}
+.pills{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.7rem}
+.pills b{font:600 .72rem 'Cinzel',serif;padding:.35rem .9rem;border-radius:99px;background:#46d6c822;border:1px solid var(--teal);color:var(--teal)}
+/* range */
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--teal),var(--gold))}
+input[type=range]::-moz-range-track{height:6px;border-radius:6px;background:linear-gradient(90deg,var(--teal),var(--gold))}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-10px;border-radius:50%;border:0;background:radial-gradient(circle,#fff,var(--gold));box-shadow:0 0 18px var(--gold)}
+input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;border:0;background:radial-gradient(circle,#fff,var(--gold));box-shadow:0 0 18px var(--gold)}
+/* gauge */
+.gauge{margin:1.6rem 0;display:grid;grid-template-columns:minmax(200px,1fr) 2fr;gap:1.6rem;align-items:center;padding:1.3rem;border-radius:26px;border:1px solid var(--line);background:linear-gradient(160deg,rgba(20,40,110,.45),rgba(8,10,40,.7))}
+@media(max-width:700px){.gauge{grid-template-columns:1fr}}
+.gauge svg{width:100%;max-height:320px;border-radius:18px;background:linear-gradient(#070a28,#2a1d6a)}
+.gauge label{font:600 .72rem 'Cinzel',serif;letter-spacing:.2em;color:var(--teal)}
+#fTxt{font:italic 1.35rem/1.4 'Cormorant Garamond',Georgia,serif;min-height:3.6em;color:var(--gold2)}
+/* water */
+.falaj{display:block;width:100%;border-radius:26px;border:1px solid rgba(70,214,200,.35);background:linear-gradient(#0b1240,#1a2a66);box-shadow:0 0 50px rgba(70,214,200,.14)}
+.flow{stroke-dasharray:12 10;animation:fl 1.2s linear infinite}
+@keyframes fl{to{stroke-dashoffset:-22}}
+.steps{display:flex;gap:.6rem;flex-wrap:wrap;margin:1.3rem 0}
+.steps button{flex:1 1 140px;min-height:48px;font:600 .72rem 'Cinzel',serif;letter-spacing:.12em;padding:.8rem;border-radius:14px;border:1px solid rgba(70,214,200,.4);background:rgba(70,214,200,.07);color:var(--ink);cursor:pointer;transition:.3s}
+.steps button.on,.steps button:hover{background:rgba(70,214,200,.25);box-shadow:0 0 24px rgba(70,214,200,.4);color:#fff;border-color:var(--teal)}
+#stepTxt{min-height:4.6em;font-size:1.08rem;border-left:3px solid var(--teal)}
+.calc{text-align:center}.calc .big{font-size:1.9rem}.calc p{margin-inline:auto}
+/* table */
+.tw{overflow-x:auto;border-radius:18px;border:1px solid var(--line);margin:1.2rem 0;background:rgba(8,10,40,.55)}
+table{border-collapse:collapse;width:100%;font-size:.95rem;min-width:560px}
+th,td{padding:.65rem 1rem;text-align:left;border-bottom:1px solid rgba(242,199,110,.1)}
+th{font:600 .7rem 'Cinzel',serif;letter-spacing:.14em;color:var(--teal);background:rgba(10,14,48,.95);position:sticky;top:0}
+tbody tr{transition:.3s}tbody tr:hover{background:rgba(242,199,110,.1)}td:first-child{color:var(--gold);font-weight:700}
+/* fading */
+.dots{display:flex;gap:.8rem;flex-wrap:wrap;margin:1.2rem 0}
+.dots i{width:34px;height:34px;border-radius:50%;background:#3a3566;transition:.8s;cursor:pointer}
+.dots i.lit{background:radial-gradient(circle,#fff,var(--gold) 45%,transparent 75%);box-shadow:0 0 24px var(--gold)}
+.dim{position:relative;height:clamp(180px,30vw,260px);border-radius:24px;overflow:hidden;background:linear-gradient(#050816,#1a1250);border:1px solid var(--line);margin:1rem 0}
+.dim::after{content:"";position:absolute;left:0;right:0;bottom:0;height:32%;background:#050616;clip-path:polygon(0 60%,10% 40%,22% 55%,35% 30%,48% 50%,62% 25%,78% 48%,90% 35%,100% 52%,100% 100%,0 100%);pointer-events:none}
+.dim .st{position:absolute;border-radius:50%;background:#fff;box-shadow:0 0 6px #fff;transition:opacity .5s}
+.dim .glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,#ffb347,rgba(255,138,60,.55) 40%,transparent 75%);transition:opacity .4s;pointer-events:none;z-index:1}
+/* preserve */
+#lantern{position:relative;height:170px;border-radius:22px;border:1px solid var(--line);background:linear-gradient(#070a28,#2a1d68);overflow:hidden;margin:1.2rem 0}
+#lantern .ls{position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,#fff,var(--gold) 50%,transparent 75%);animation:tw 3s infinite;transform:translate(-50%,-50%);box-shadow:0 0 18px var(--gold)}
+.big{font:700 2.6rem 'Cinzel',serif;color:var(--gold);text-shadow:0 0 22px var(--gold)}
+#preserve>.card.reveal:last-of-type{padding:2rem 1.5rem;background:linear-gradient(160deg,rgba(90,60,140,.5),rgba(12,10,42,.75))}
+/* footer */
+footer{position:relative;z-index:2;text-align:center;padding:4rem 1.4rem 5rem;color:var(--mute);font-size:.92rem;max-width:820px;margin:0 auto;border-top:1px solid var(--line)}
+footer p{margin:.8rem 0}footer small{display:block;margin-top:.8rem;opacity:.85}
+#up{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:rgba(8,10,34,.85);color:var(--gold);font-size:1.3rem;cursor:pointer;opacity:0;visibility:hidden;transition:.3s;backdrop-filter:blur(8px)}
+#up.show{opacity:1;visibility:visible}#up:hover{box-shadow:0 0 24px #f2c76e88}
+@media(max-width:600px){body{font-size:17px}.scroll{display:none}.moon{right:8%;top:17%}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+</style>
+<style id="major-redesign">
+:root{--navy:#050b13;--night:#091521;--plum:#12283a;--gold:#c9a66b;--gold2:#f1dfbd;--amber:#df9864;--teal:#7fc4b7;--ink:#f4f0e7;--mute:#aab8bd;--line:rgba(201,166,107,.22);--r:8px}
+body{font-family:Manrope,Arial,sans-serif;background:#050b13;letter-spacing:-.015em;color:#f4f0e7}
+body:before{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.11;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.25'/%3E%3C/svg%3E")}
+#sky{opacity:.5}
+.top{width:calc(100% - 48px);max-width:1440px;top:18px;border-radius:6px;padding:.55rem 1rem;background:rgba(5,11,19,.72);border:1px solid rgba(201,166,107,.16)}
+.brand{font:700 .7rem DM Mono,monospace;letter-spacing:.13em;color:#e3c18a}
+.top nav a{font:500 .65rem DM Mono,monospace;letter-spacing:.06em;border-radius:4px;padding:.65rem .8rem;color:#b6c1c4}
+.top nav a:hover,.top nav a.on{background:#c9a66b;color:#07111b;box-shadow:none}
+.top nav a b{color:#7fc4b7}
+.top nav a:hover b,.top nav a.on b{color:#07111b}
+#hero{min-height:100svh;padding:11rem 8vw 22vh;align-items:flex-start;text-align:left;justify-content:center;max-width:1600px;margin:auto}
+#hero::before{background:linear-gradient(90deg,#050b13 2%,rgba(5,11,19,.92) 34%,rgba(5,11,19,.25) 100%),linear-gradient(0deg,#050b13,transparent 32%)}
+#hero::after{content:"";position:absolute;right:7vw;top:16%;width:min(42vw,560px);aspect-ratio:1;border:1px solid #c9a66b27;border-radius:50%;box-shadow:0 0 0 50px #c9a66b08,0 0 0 110px #c9a66b05;z-index:-1}
+#hero .moon{right:15%;top:20%;width:clamp(130px,19vw,270px);height:clamp(130px,19vw,270px);opacity:.75;background:#e5ddc9;box-shadow:inset -30px 8px 0 #b9b5a8;filter:drop-shadow(0 0 50px #d9c9a322)}
+#hero .kick{font:500 .72rem DM Mono,monospace;letter-spacing:.17em;color:var(--teal);text-transform:uppercase}
+#hero .kick:before{content:"";width:44px;height:1px;background:var(--teal)}
+#hero h1{font:500 clamp(3.6rem,10.2vw,9.8rem)/.88 'Playfair Display',serif;letter-spacing:-.065em;color:#eee5d2;background:none;-webkit-text-fill-color:#eee5d2;filter:none;max-width:1000px;margin:1.2rem 0;position:relative;z-index:2}
+#hero h1 br{display:block}
+#hero h1:after{content:"✳";font:400 .22em Manrope,sans-serif;color:var(--gold);vertical-align:top;margin-left:.35em;letter-spacing:0}
+#hero p{font:400 clamp(1rem,1.6vw,1.3rem)/1.7 Manrope,sans-serif;color:#b9c4c6;max-width:490px;margin:1.3rem 0 2rem}
+#hero .btn{display:inline-flex;align-items:center;gap:2rem;background:transparent;border:1px solid #c9a66b;color:#e4c58d;padding:1rem 1.3rem;border-radius:3px;font:500 .68rem DM Mono,monospace;letter-spacing:.1em;box-shadow:none}
+#hero .btn:after{content:"↗";font-size:1.1rem}
+#hero .btn:hover{background:#c9a66b;color:#07111b}
+#hero .chips{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:3rem}
+#hero .chips a{font:400 .62rem DM Mono,monospace;letter-spacing:.1em;border:1px solid #b8c1c324;border-radius:3px;background:transparent;color:#9caeb3;padding:.55rem .75rem}
+#hero .chips a:hover{border-color:var(--teal);color:var(--teal)}
+#hero .scroll{position:absolute;bottom:5rem;left:8vw;writing-mode:vertical-rl;font:400 .58rem DM Mono,monospace;letter-spacing:.16em;color:#8d9ba0}
+#hero .dunes{opacity:.5}
+.sec{max-width:1300px;padding:clamp(6rem,12vw,11rem) 3rem clamp(4rem,8vw,8rem)}
+.sec::before{background:linear-gradient(180deg,transparent,rgba(8,21,33,.75) 20%,rgba(8,21,33,.8) 80%,transparent)!important}
+.sec::after{font:500 clamp(8rem,22vw,19rem)/1 'Playfair Display',serif;right:2rem;top:3rem;color:rgba(201,166,107,.035);-webkit-text-stroke:0}
+.kick{font:500 .66rem DM Mono,monospace;letter-spacing:.16em;color:var(--teal)}
+h2{font:500 clamp(2.8rem,7vw,6rem)/.98 'Playfair Display',serif;letter-spacing:-.045em;color:#eee5d2;background:none;-webkit-text-fill-color:#eee5d2;filter:none;margin:.65rem 0 1.3rem}
+h2::after{height:1px;width:110px;background:var(--gold);margin-top:1rem}
+h3{font:600 .95rem/1.5 Manrope,sans-serif;letter-spacing:-.02em}
+.sec>.reveal:first-child p:first-of-type{font-size:1.08rem;max-width:64ch;color:#d0d8d8}
+.sec p{color:#aebdc1}
+strong{color:#e5c48e}
+.grid{gap:1rem;margin:2.2rem 0}
+.card{border-radius:5px;border:1px solid #c9a66b24;background:linear-gradient(135deg,#10202cbb,#08131dbb);padding:1.6rem;box-shadow:none;backdrop-filter:blur(12px)}
+.card:before{background:linear-gradient(110deg,#7fc4b710,transparent 50%,#c9a66b08)}
+.card:hover{transform:translateY(-3px);border-color:#7fc4b766;box-shadow:0 20px 50px #0003}
+.card h3{font-size:.95rem;color:#e3c18a}
+.card h3:before{color:var(--teal)}
+.card p{font-size:.94rem;color:#b7c4c7}
+.skybox{background:#07121d;border:1px solid #7fc4b733;border-radius:5px;box-shadow:none}
+.gauge,.steps,.sliderbox{border-radius:5px}
+.btn{font:500 .68rem DM Mono,monospace;letter-spacing:.1em;border-radius:3px}
+footer{border-top:1px solid #c9a66b20;color:#82949a}
+@media(max-width:760px){
+ #hero{padding:9rem 1.4rem 20vh;min-height:92svh}
+ #hero h1{font-size:clamp(3.4rem,16vw,6rem)}
+ #hero .moon{right:8%;top:14%;opacity:.25}
+ #hero:after{right:3%;top:12%;width:70vw}
+ #hero .scroll{left:1.4rem;bottom:3rem}
+ .top{width:calc(100% - 24px);top:10px}
+ .sec{padding:6rem 1.2rem 4rem}
+ .sec:after{right:.4rem;top:2rem}
+}
+</style>
+<style id="fix">
+:root{--gold:#f2c76e;--gold2:#ffe3a6;--teal:#46d6c8;--amber:#ff9f4d;--ink:#efedfa;--mute:#c2c5e2;--line:rgba(242,199,110,.28);--r:18px}
+html{background:#050818}
+body{font:17px/1.7 'Nunito Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;letter-spacing:0;color:var(--ink);background:radial-gradient(70% 40% at 85% 12%,rgba(120,90,230,.3),transparent 70%),radial-gradient(60% 35% at 8% 48%,rgba(30,120,180,.26),transparent 70%),radial-gradient(70% 40% at 80% 84%,rgba(100,40,160,.3),transparent 70%),linear-gradient(180deg,#040617,#0b1240 35%,#0a1038 65%,#170c3e 90%,#050818)}
+body:before{display:none}
+#sky{opacity:1}
+.top{top:calc(env(safe-area-inset-top,0px) + 10px);width:min(1120px,calc(100% - 20px));border-radius:99px;padding:.5rem .55rem .5rem 1.2rem;background:rgba(8,10,40,.84);border:1px solid var(--line);backdrop-filter:none;-webkit-backdrop-filter:none}
+.brand{font:700 .78rem Cinzel,Georgia,serif;letter-spacing:.16em;color:var(--gold)}
+.top nav a{font:600 .66rem Cinzel,Georgia,serif;letter-spacing:.12em;border-radius:99px;padding:.6rem .85rem;color:var(--mute)}
+.top nav a:hover,.top nav a.on{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1040}
+.top nav a b{color:var(--teal)}.top nav a:hover b,.top nav a.on b{color:#1a1040}
+/* hero */
+#hero{max-width:none;margin:0;align-items:center;text-align:center;padding:7rem 1.2rem 34vh}
+#hero::before{background:linear-gradient(180deg,rgba(5,8,24,0),rgba(38,26,92,.35) 55%,rgba(255,140,80,.25) 86%,rgba(10,8,40,.85))}
+#hero::after{left:-25%;right:-25%;top:4%;width:auto;height:60%;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none;background:radial-gradient(closest-side,rgba(200,180,255,.26),transparent);transform:rotate(-24deg) scaleY(.38)}
+#hero .moon{right:13%;top:15%;width:clamp(96px,13vw,170px);height:auto;aspect-ratio:1;opacity:1;background:radial-gradient(circle at 62% 50%,rgba(130,120,210,.2),transparent 70%);box-shadow:inset -30px 8px 0 0 #fff0c8;filter:drop-shadow(0 0 26px #ffe8a8)}
+#hero .kick{font:600 .72rem Cinzel,Georgia,serif;letter-spacing:.3em}
+#hero h1{font:700 clamp(2.4rem,9vw,6.2rem)/1.06 Cinzel,Georgia,serif;letter-spacing:.08em;background:linear-gradient(90deg,#f2c76e,#fff3cf,#ffb85e);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:none;animation:none;max-width:none;margin:.3em 0 0}
+#hero h1:after{display:none}
+#hero p{font:italic 1.4rem/1.5 'Cormorant Garamond',Georgia,serif;color:var(--mute);max-width:600px;margin:1.3rem auto 2rem}
+#hero .btn{display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1040;border:0;border-radius:99px;padding:1rem 2.2rem;font:700 .8rem Cinzel,Georgia,serif;letter-spacing:.2em;box-shadow:0 0 26px #f2c76e77}
+#hero .btn:after{display:none}
+#hero .chips{justify-content:center;margin-top:1.6rem}
+#hero .chips a{font:600 .66rem Cinzel,Georgia,serif;letter-spacing:.16em;border-radius:99px;border:1px solid var(--line);background:rgba(10,12,40,.5);color:var(--ink);padding:.55rem 1rem}
+#hero .scroll{writing-mode:horizontal-tb;left:50%;bottom:36vh;font:600 .65rem Cinzel,Georgia,serif;letter-spacing:.3em}
+#hero .dunes{opacity:1}
+.hero-index,.hero-rule,.hero-note{display:none}
+/* sections: lighter veil so stars show, soft behind text */
+.sec{max-width:1120px;padding:clamp(5.5rem,11vw,9rem) 1.3rem clamp(3rem,6vw,5rem)}
+.sec::before{background:linear-gradient(180deg,transparent,rgba(8,12,52,.3) 18%,rgba(8,12,52,.3) 82%,transparent)!important}
+#water::before{background:linear-gradient(180deg,transparent,rgba(8,70,110,.32) 18%,rgba(6,40,90,.32) 82%,transparent)!important}
+#preserve::before{background:linear-gradient(180deg,transparent,rgba(70,30,130,.3) 18%,rgba(40,20,100,.3) 82%,transparent)!important}
+.sec::after{font:700 clamp(6rem,20vw,15rem)/1 Cinzel,Georgia,serif;color:transparent;-webkit-text-stroke:1px rgba(242,199,110,.12)}
+.kick{font:600 .72rem Cinzel,Georgia,serif;letter-spacing:.28em}
+h2{font:700 clamp(1.9rem,6vw,3.2rem)/1.15 Cinzel,Georgia,serif;letter-spacing:.05em;background:linear-gradient(100deg,#ffe3a6,#f2c76e 50%,#ffb85e);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:none;margin:.3em 0 .5em}
+h2::after{width:96px;height:3px;background:linear-gradient(90deg,var(--gold),var(--teal),transparent);border-radius:3px}
+h3{font:700 .98rem/1.4 Cinzel,Georgia,serif;letter-spacing:.05em}
+.sec p{color:rgba(239,237,250,.93)}.sec>.reveal:first-child p:first-of-type{font-size:1.1rem;color:var(--ink)}
+strong{color:var(--gold2)}
+/* cards: own look, depth, no blur (smooth scrolling) */
+.card{border-radius:var(--r);border:1px solid var(--line);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:0 12px 30px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.08);background:linear-gradient(160deg,rgba(48,36,120,.75),rgba(12,10,42,.9))}
+.card h3{color:var(--gold);font-size:.98rem}.card p{font-size:1rem;color:rgba(239,237,250,.9)}
+@media(hover:hover){.card:hover{transform:translateY(-4px)}}
+@media(hover:none){.card:hover{transform:none}}
+#welcome .grid .card{background:linear-gradient(160deg,rgba(80,56,180,.72),rgba(14,10,54,.92));border-color:rgba(190,160,255,.34)}
+#welcome .grid .card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34px;background:#080a2a;clip-path:polygon(0 70%,18% 35%,34% 65%,52% 20%,70% 60%,86% 30%,100% 55%,100% 100%,0 100%);opacity:.7;pointer-events:none}
+#navigate .grid .card{background:linear-gradient(180deg,rgba(14,56,130,.75),rgba(4,14,58,.93));border-color:rgba(70,214,200,.34)}
+#navigate .grid .card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:26px;background:repeating-radial-gradient(circle at 50% 170%,transparent 0 9px,rgba(70,214,200,.3) 10px 11px);pointer-events:none}
+#water .grid .card{background:linear-gradient(110deg,rgba(8,84,120,.78),rgba(6,22,68,.93));border-color:rgba(70,214,200,.4)}
+#water .grid .card::after{content:"";position:absolute;left:1.2rem;right:1.2rem;bottom:10px;height:3px;border-radius:3px;background:repeating-linear-gradient(90deg,var(--teal) 0 14px,transparent 14px 24px);opacity:.55;pointer-events:none}
+#fading .grid .card{background:linear-gradient(170deg,rgba(120,50,110,.65),rgba(18,10,50,.93));border-color:rgba(255,159,77,.35)}
+#fading .grid .card::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(0deg,rgba(255,159,77,.2),transparent);pointer-events:none}
+#preserve .grid .card{background:linear-gradient(160deg,rgba(100,56,170,.72),rgba(20,10,60,.93));border-color:rgba(242,199,110,.34)}
+#preserve>.card:last-child{padding:2rem 1.4rem;border-color:rgba(242,199,110,.55);background:radial-gradient(2px 2px at 10% 20%,#ffd56e 50%,transparent),radial-gradient(3px 3px at 24% 72%,#ffd56e 50%,transparent),radial-gradient(2px 2px at 41% 14%,#fff2b8 50%,transparent),radial-gradient(3px 3px at 58% 80%,#ffd56e 50%,transparent),radial-gradient(2px 2px at 73% 26%,#ffd56e 50%,transparent),radial-gradient(3px 3px at 90% 62%,#fff2b8 50%,transparent),radial-gradient(2px 2px at 84% 12%,#ffd56e 50%,transparent),linear-gradient(170deg,#6a35ac,#2b1570 55%,#150b45)}
+.calc{background:radial-gradient(60% 80% at 50% 0%,rgba(242,199,110,.24),transparent),linear-gradient(160deg,#2c2264,#0c0a38);border-color:rgba(242,199,110,.55)}
+.meter{height:8px;border-radius:8px;background:rgba(255,255,255,.14);margin:.5rem auto;max-width:420px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--gold))}
+/* star picker */
+.skybox{height:clamp(320px,52vw,420px);border-radius:22px;border:1px solid var(--line);touch-action:manipulation;background:radial-gradient(60% 40% at 50% 100%,rgba(255,159,77,.3),transparent),radial-gradient(circle at 18% 14%,rgba(130,100,240,.45),transparent 50%),linear-gradient(#050825,#16124f 60%,#3b2a7a)}
+.skybox::before{content:"";position:absolute;left:0;right:0;bottom:0;height:32%;background:#2a1f66;clip-path:polygon(0 60%,10% 35%,22% 55%,36% 22%,50% 50%,64% 28%,78% 52%,90% 30%,100% 48%,100% 100%,0 100%);pointer-events:none;z-index:1}
+.skybox::after{z-index:1;height:20%}
+.skybox .bs{position:absolute;border-radius:50%;background:#fff;pointer-events:none}
+.skybox button{width:52px;height:52px;background:none;filter:none;animation:none;scale:1;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.skybox button::before{content:"";position:absolute;left:50%;top:50%;width:14px;height:14px;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle,#fff 0 35%,#ffe3a6 60%,#f2c76e);box-shadow:0 0 14px 4px rgba(242,199,110,.85),0 0 36px 10px rgba(242,199,110,.35);animation:tw 2.8s ease-in-out infinite}
+.skybox button:nth-of-type(2n)::before{animation-delay:.9s}
+.skybox button.on::before{width:24px;height:24px;animation:none;box-shadow:0 0 22px 9px #fff,0 0 64px 22px rgba(242,199,110,.8)}
+.skybox button.on{scale:1}
+.sl.on{color:#fff;font-size:.72rem}
+@media(max-width:600px){.sl.on{display:block}}
+#info{background:linear-gradient(160deg,rgba(60,44,150,.8),rgba(10,10,48,.93))}
+/* pole star + falaj */
+.gauge{background:linear-gradient(160deg,rgba(15,44,120,.75),rgba(4,10,40,.92));border-color:rgba(70,214,200,.4);box-shadow:0 14px 40px rgba(0,0,0,.4),0 0 40px rgba(70,214,200,.1)}
+.gauge svg{background:none}
+#fing,#ath,#lp{touch-action:pan-y}
+.falaj{border-color:rgba(70,214,200,.4)}
+.steps button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.steps button.on{background:rgba(70,214,200,.3);border-color:var(--teal);color:#fff;box-shadow:0 0 22px rgba(70,214,200,.45)}
+#stepTxt{background:linear-gradient(120deg,rgba(8,84,124,.7),rgba(6,24,72,.92));border-left:3px solid var(--teal)}
+#zones .zn{opacity:0;transition:opacity .25s}#zones .zn.on{opacity:1}
+#zones circle,#zones ellipse{fill:rgba(255,230,150,.22);stroke:#ffe3a6;stroke-width:2.5}
+#zones .zn.on circle,#zones .zn.on ellipse{animation:pz 1.4s ease-in-out infinite}
+@keyframes pz{50%{stroke-opacity:.35}}
+#zones text{fill:#fff;paint-order:stroke;stroke:#0b1240;stroke-width:3px}
+#zones .flow{stroke:#ffe3a6;stroke-width:3;fill:none}
+#zones .zn:last-child circle:first-child{fill:#fff0c8}
+.falaj.nt>.flow{stroke:#f6d27a}
+/* fading */
+.dim{height:clamp(200px,34vw,280px)}.dim .st,.dim .glow{transition:opacity .12s}
+.vl{position:absolute;z-index:2;width:5px;height:5px;border-radius:50%;background:#ffd98a;box-shadow:0 0 8px 3px rgba(255,200,100,.8);opacity:.1}
+#lpT,#sv{color:var(--mute);font-size:.95rem;margin:.4rem 0}
+.dots i{width:40px;height:40px;-webkit-tap-highlight-color:transparent}
+/* lantern */
+#lantern{background:radial-gradient(60% 90% at 50% 110%,rgba(242,199,110,.2),transparent),linear-gradient(#2a1068,#4b2590);border-color:rgba(242,199,110,.4)}
+#lantern .ls{width:18px;height:18px}
+#lantern .ls.pop{animation:pop .7s ease-out,tw 3s .7s infinite}
+@keyframes pop{from{scale:4;opacity:0}}
+#light{touch-action:manipulation;min-height:48px}
+@media(max-width:700px){.sec{padding:5.5rem 1.1rem 3rem}.sec::after{right:.2rem}}
+@media(prefers-reduced-motion:reduce){#lantern .ls.pop{animation:none}}
+</style>
+
+</head><body>
+<a class="skip" href="#welcome">Skip to content</a><div id="bar"></div>
+<canvas id="sky" aria-hidden="true"></canvas>
+<header class="top"><a class="brand" href="#hero">✦ UNDER THE OMANI STARS</a>
+<button class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><i></i><i></i><i></i></button>
+<nav id="menu" aria-label="Sections"><a href="#welcome"><b>I</b> Night Sky</a><a href="#navigate"><b>II</b> Navigate</a><a href="#water"><b>III</b> Water</a><a href="#fading"><b>IV</b> Fading</a><a href="#preserve"><b>V</b> Preserve</a></nav></header>
+
+<section id="hero">
+<div class="moon" aria-hidden="true"></div>
+<div class="kick">An Omani night, an ancient clock</div>
+<h1>UNDER THE<br>OMANI STARS</h1>
+<p>Before watches, farmers and sailors read time and place in the stars. Step into the desert at night and learn how.</p>
+<a class="btn" href="#welcome">BEGIN THE JOURNEY</a>
+<div class="chips"><a href="#welcome">STARS</a><a href="#navigate">SEA</a><a href="#water">WATER</a><a href="#fading">FADING</a><a href="#preserve">HERITAGE</a></div>
+<div class="scroll">SCROLL TO EXPLORE ↓</div><div class="hero-index" aria-hidden="true"><strong>24° N</strong>OMAN · NIGHT SKY<br>FIELD NOTES / 01</div>
+<div class="hero-rule" aria-hidden="true"></div>
+<div class="hero-note" aria-hidden="true">A living heritage written in the stars</div>
+
+<svg class="dunes" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+<defs><linearGradient id="gm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3496"/><stop offset="1" stop-color="#1a1348"/></linearGradient>
+<linearGradient id="gd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#241a5e"/><stop offset="1" stop-color="#0a0a2c"/></linearGradient>
+<radialGradient id="gp"><stop offset="0" stop-color="#7ff5e6"/><stop offset="1" stop-color="#46d6c8" stop-opacity="0"/></radialGradient>
+<g id="pm" stroke="#05051a" fill="none" stroke-linecap="round"><path d="M0 0Q12-50 6-102" stroke-width="7"/><path d="M6-102c-30-22-60-14-78 8M6-102c30-22 60-14 78 8M6-102c-20-34-44-36-62-22M6-102c20-34 44-36 62-22M6-102v-30" stroke-width="5"/></g></defs>
+<g id="d1"><path d="M0 250 L120 190 L230 235 L360 150 L470 225 L560 190 L700 260 L840 170 L960 230 L1100 160 L1230 240 L1340 190 L1440 235 V520H0Z" fill="url(#gm)" opacity=".85"/></g>
+<g fill="#0b0830"><path d="M900 345V285h22v-10h8v10h22v-26h8v-8h8v8h8v26h22v-10h8v10h22v60z"/><path d="M1020 259v-30h30v30zM1016 229h38l-19-18z"/></g>
+<g id="d2"><path d="M0 330C200 270 380 360 620 310S1000 270 1200 320S1380 330 1440 310V520H0Z" fill="url(#gd)"/><path d="M0 330C200 270 380 360 620 310S1000 270 1200 320S1380 330 1440 310" fill="none" stroke="rgba(242,199,110,.35)" stroke-width="1.5"/></g>
+<path d="M0 430C260 380 480 470 760 420S1180 390 1440 440V520H0Z" fill="#070720"/>
+<ellipse cx="230" cy="498" rx="190" ry="18" fill="url(#gp)" opacity=".7"/><ellipse cx="230" cy="498" rx="120" ry="8" fill="#46d6c8" opacity=".5"/>
+<use href="#pm" transform="translate(160 492)"/><use href="#pm" transform="translate(250 500) scale(.8)"/><use href="#pm" transform="translate(300 494) scale(.62)"/><use href="#pm" transform="translate(1250 480) scale(.9)"/><use href="#pm" transform="translate(1330 488) scale(.7)"/>
+</svg>
+</section>
+
+<section id="welcome" class="sec" data-n="I">
+<div class="reveal"><div class="kick">I · Welcome</div><h2>Welcome to the Omani Night Sky</h2>
+<p>In parts of northern Oman, stars are still used to time the sharing of irrigation water, even though watches are everywhere. Farmers watch certain stars rise, and each rising marks a slice of the night. Many of the stars carry local names that differ from those in books on classical Arabic stars.</p>
+<p>Tap a star below. These are some of the stars used in the village of Qaryah Beni Subh, and the length of the time slices (<em>āthār</em>) each one marks.</p></div>
+<div class="skybox reveal" id="skybox"><span>✦ tap a glowing star ✦</span></div>
+<div class="card reveal" id="info"><h3>Choose a star</h3><p>Each star has an Omani name, an international name, and a place in the night’s schedule.</p></div>
+<div class="grid">
+<div class="card reveal"><h3>A night of 48 slices</h3><p>A day is divided into forty-eight <em>āthār</em>. By day, an <em>athar</em> is the time a shadow takes to lengthen by a man’s foot, nominally half an hour. A sundial of poles and painted lines tells it.</p></div>
+<div class="card reveal"><h3>Stars that move</h3><p>Each evening the stars rise four minutes earlier, so different stars serve in different seasons. One painted chart from Mudayrib shows twenty-four stars across a year, six in each quarter.</p></div>
+<div class="card reveal"><h3>Many names, one star</h3><p>Al‑Shaʿaraʾ is usually Sirius, but Procyon is also called al‑Shaʿaraʾ. Stars called by body parts, such as al‑Janb (the side), appear in many constellations.</p></div>
+</div>
+<div class="reveal"><h2 style="font-size:1.5rem">The Star Ledger of Qaryah Beni Subh</h2><p>Twenty‑one main stars are used here, and with divider stars the total is about fifty. The gap between main stars ranges from 40 to 90 minutes, split into <em>āthār</em> of 20 to 50 minutes. These are the stars identified so far, with the minutes of each <em>athar</em> between one star and the next. The source marks some times as not yet verified.</p>
+<div class="tw"><table><thead><tr><th>Omani name</th><th>Star</th><th>Āthār</th><th>Minutes each</th></tr></thead><tbody id="led"></tbody></table></div></div>
+<div class="grid">
+<div class="card reveal"><h3>Divider stars</h3><p>Between main stars, unnamed “divider” stars (<em>manṣaf</em>) help split the gap. Betelgeuse divides al‑Shubcha and al‑Jawzaʾ, and Pollux divides al‑Jawzaʾ and al‑Shaʿaraʾ. Between al‑Dhakarayn and al‑Ghafur, two dividers fall 20 minutes apart, each rising 20 minutes after the one before. Some dividers do not match the <em>athar</em> times at all.</p></div>
+<div class="card reveal"><h3>One horizon</h3><p>In Qaryah Beni Subh, stars are watched rising above a fixed horizon from three stargazing points, so farm workers can reach one wherever they are irrigating. The official stargazer, Rashid bin Khamis al‑Subhi, stays out all night. His father held the post before him, and he is teaching it to his brother and son.</p></div>
+<div class="card reveal"><h3>A moving observer</h3><p>In Barzamān a wall and in Sudayrah palm trees mark the horizon. The observer steps forward, pausing at points where the star will rise one <em>athar</em> or one <em>sahm</em> later than at the last point.</p></div>
+<div class="card reveal"><h3>Walls, posts and the zenith</h3><p>Zahib uses about forty viewing points along an alley, with a horizontal pole as the main marker. Stars are watched rising above it from the west and setting from the east, and al‑Nisr is watched almost overhead. In al‑Fath, an observer looks west from a mosque wall, moving back so a star sets later each time.</p></div>
+<div class="card reveal"><h3>Twenty‑four stars, a year of nights</h3><p>The Muda’ybi area uses twenty‑four stars, with minor differences between villages. A chart painted in Mudayrib in the 1980s shows six stars in each season, with the minutes between them in star shapes around the rim.</p></div>
+<div class="card reveal"><h3>Names that change</h3><p>Some names differ by village. In the Beni Subh area the “k” often becomes “ch”, so al‑Chūī and al‑Shubcha are also called al‑Kūī and al‑Shubka. Al‑Jawzaʾ is Alhena, and the Mudayrib chart’s al‑Ẓalmī may be the same star. At Zahib, the timing star was changed from Procyon to Sirius some forty years ago to suit farm workers from the Indian sub‑continent.</p></div>
+</div>
+</section>
+
+<section id="navigate" class="sec" data-n="II">
+<div class="reveal"><div class="kick">II · The Sea</div><h2>How Omanis Used Stars to Navigate</h2>
+<p>Navigators at sea measured how high a star stood above the horizon, not in degrees but in <strong>finger‑widths</strong>. Because most northern Indian Ocean routes lie within 25° of the equator, the Pole Star sits close to the horizon and can be measured accurately. The more fingers it measured, the farther north the ship.</p></div>
+<div class="gauge reveal">
+<svg viewBox="0 0 300 300" role="img" aria-label="Pole Star height above the sea horizon"><defs><linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#030515"/><stop offset=".7" stop-color="#17175a"/><stop offset="1" stop-color="#3b3a8a"/></linearGradient><linearGradient id="gSea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16588f"/><stop offset="1" stop-color="#040b2a"/></linearGradient><radialGradient id="gHz"><stop offset="0" stop-color="#ffc86e" stop-opacity=".7"/><stop offset="1" stop-color="#ffc86e" stop-opacity="0"/></radialGradient></defs><rect width="300" height="250" fill="url(#gSky)"/><g id="gStars"></g><ellipse cx="150" cy="250" rx="200" ry="38" fill="url(#gHz)"/><g id="gTicks"></g><line id="pLine" x1="150" y1="110" x2="150" y2="250" stroke="#f6d27a" stroke-width="1.5" stroke-dasharray="4 5" opacity=".85"/><circle id="pGlow" cx="150" cy="110" r="16" fill="#f6d27a" opacity=".3"/><circle id="pStar" cx="150" cy="110" r="6" fill="#fff"/><text id="pTxt" x="162" y="180" fill="#ffe3a6" font-size="16" font-family="Cinzel,Georgia,serif" style="paint-order:stroke;stroke:#050818;stroke-width:3px">11 fingers</text><rect y="250" width="300" height="50" fill="url(#gSea)"/><rect x="143" y="254" width="14" height="40" rx="7" fill="#f6d27a" opacity=".16"/><path d="M0 266 Q38 258 75 266T150 266T225 266T300 266" fill="none" stroke="#46d6c8" opacity=".4"/><path d="M0 282 Q38 275 75 282T150 282T225 282T300 282" fill="none" stroke="#46d6c8" opacity=".25"/><line x1="0" x2="300" y1="250" y2="250" stroke="#ffe3a6" stroke-width="1.6"/></svg>
+<div><label class="cin" style="font-size:.8rem;color:var(--teal)" for="fing">DRAG: HEIGHT OF THE POLE STAR</label><input id="fing" type="range" min="3" max="11" value="11"><div id="fTxt"></div></div></div>
+<div class="grid">
+<div class="card reveal"><h3>The Kamal and the “wood”</h3><p>A simple tool that lets sailors measure the angle of stars above the horizon. By the fifteenth century, wooden instruments called a <em>khashaba</em> replaced the hand to standardize readings.</p></div>
+<div class="card reveal"><h3>Stellar compass</h3><p>Compass points carried star names: “northeast” was “the rising of Capella” and “northwest” “the setting of Capella.” Ibn Majid’s wind‑rose had 32 rhumbs.</p></div>
+<div class="card reveal"><h3>The “Jah” star</h3><p>A log entry that places Muscat at “Jah 5” means the star stands five finger‑widths above the horizon there. Checking it every 24 hours gave the captain his position.</p></div>
+<div class="card reveal"><h3>A calendar of numbers</h3><p>Sea communities split the year into 36 parts called <em>Dar</em>, using numbers. Desert and town dwellers named star risings, called <em>Naw</em>.</p></div>
+<div class="card reveal"><h3>Masters of the craft</h3><p>Ahmad ibn Majid and Sulayman al‑Mahri wrote the great navigation texts. Ibn Majid listed over 73 star combinations for altitude measurement. Al‑Mahri gave over 30 set routes, such as Muscat to Malacca.</p></div>
+<div class="card reveal"><h3>Riding the monsoon</h3><p>Seasonal winds blow northeast in winter and southwest in summer. Sailors timed departures to them: crossing the Bay of Bengal meant leaving in late April or May.</p></div>
+</div></section>
+
+<section id="water" class="sec" data-n="III">
+<div class="reveal"><div class="kick">III · The Oasis</div><h2>How People Found and Managed Water</h2>
+<p>Oman’s <em>aflāj</em> (singular <em>falaj</em>) are channels that tap groundwater and carry it to fields by gravity alone. A tunnel is dug at a shallow angle to reach the water table, with access shafts for removing spoil and for ventilation. About 4,000 systems were counted in the late 1990s, and about 3,000 were still in use. The oldest known examples date back to the third millennium BC.</p></div>
+<svg class="falaj reveal" viewBox="0 0 800 260" aria-label="Cross-section of a falaj">
+<path d="M0 90 L560 20 L800 10 V260 H0Z" fill="#3a2a6a"/><path d="M300 55 L800 8 V200 H300Z" fill="#1c6a8a" opacity=".55"/>
+<g stroke="#f6d27a" stroke-width="3" opacity=".8"><path d="M420 45v130M500 36v130M580 28v130M660 20v130"/></g>
+<text x="500" y="14" fill="#f6d27a" font-size="13" font-family="Cinzel" text-anchor="middle">ACCESS SHAFTS</text>
+<path class="flow" d="M700 160 L120 120" stroke="#6cf0e0" stroke-width="7" fill="none"/>
+<text x="650" y="215" fill="#cfeaff" font-size="13" font-family="Cinzel">SOURCE (saturated gravels)</text>
+<ellipse cx="90" cy="130" rx="60" ry="10" fill="#3fd5c4" opacity=".85"/>
+<g fill="#10113a"><path d="M40 125v-50M40 85c-14-10-26-6-30 6M40 85c14-10 26-6 30 6M85 125v-60M85 75c-14-10-26-6-30 6M85 75c14-10 26-6 30 6"/><path d="M130 125h50v-34h-14v-18h-22v18h-14z"/></g>
+<text x="90" y="160" fill="#cfeaff" font-size="13" font-family="Cinzel" text-anchor="middle">VILLAGE &amp; DATE GARDENS</text><g id="zones" font-family="Cinzel,Georgia,serif" font-size="13" text-anchor="middle"><g class="zn"><circle cx="335" cy="135" r="15"/><text x="335" y="178">DRINKING</text></g><g class="zn"><circle cx="268" cy="130" r="15"/><text x="268" y="172">ANIMALS</text></g><g class="zn"><circle cx="205" cy="126" r="15"/><text x="205" y="168">WASHING</text></g><g class="zn"><ellipse cx="85" cy="128" rx="78" ry="34"/><path class="flow" d="M120 120L100 152M120 120L60 152M120 120L150 152"/><text x="85" y="205">FIELDS</text></g><g class="zn"><circle cx="250" cy="38" r="11"/><circle cx="290" cy="30" r="2"/><circle cx="215" cy="26" r="2"/><circle cx="318" cy="46" r="2"/><text x="250" y="16">NIGHT: STAR TURNS</text></g></g></svg>
+<div class="reveal"><p style="margin-top:1.4rem">Water flows day and night, so its use is divided by <strong>time</strong>. Each farmer’s share is the time the water runs to their field. Press each step to see where the water goes:</p>
+<div class="steps"><button class="on" data-i="0">1 · DRINKING</button><button data-i="1">2 · ANIMALS</button><button data-i="2">3 · WASHING</button><button data-i="3">4 · FIELDS</button><button data-i="4">5 · NIGHT</button></div>
+<div class="card" id="stepTxt"></div></div>
+<div class="grid">
+<div class="card reveal"><h3>Why a falaj never runs dry by greed</h3><p>A falaj is a sustainable way to use water, because the flow to the fields cannot exceed the groundwater that is recharged. The water is often taken from wadi gravel deposits, which store more and give more reliable yields than bedrock.</p></div>
+<div class="card reveal"><h3>A word that means “share”</h3><p>In classical Arabic, <em>falaj</em> carries meanings such as “to divide into shares” and “running water.” In Oman it names the whole system: tapping groundwater, bringing it to the surface and dividing it among fields by gravity.</p></div>
+<div class="card reveal"><h3>Thousands of years of channels</h3><p>At least six systems dated to about 1000 BC have been identified in the UAE and Oman, and one near Bahla is attributed to the third millennium BC. Irrigated land peaked in the late Sasanian period, and another wave of building and repair came in the mid‑seventeenth to mid‑eighteenth centuries. Some systems reach more than 100 km south of the mountains, into areas with almost no rain.</p></div>
+<div class="card reveal"><h3>A shared effort</h3><p>Building and repair were once carried out or paid for by the falaj community. Today most can afford only routine upkeep such as cleaning silt from channels. Pumped wells have lowered groundwater and dried up some falaj, though the government funds repairs and even support wells.</p></div>
+<div class="card reveal"><h3>The day and the night</h3><p>The day is split into two big blocks (<em>badah</em>), and into forty‑eight <em>āthār</em>. Daytime is read from a sundial, a marker pole and lines running roughly north–south. Some villages use the <em>sahm</em> of 45 minutes instead. The smallest practical slice for irrigation is one twenty‑fourth of an <em>athar</em>, a little over a minute.</p></div>
+<div class="card reveal"><h3>Before the stars took over</h3><p>In Misfat al‑Abriyin, stars were used for only about 115 years, until the 1970s, once the falaj was extended and reorganized. Earlier, with a small area to cultivate, water could simply flood the land. Elsewhere a water clock was used, as formerly in Nizwa, and in some mountain villages.</p></div>
+<div class="card reveal"><h3>Sharing without a chief</h3><p>In the Muda’ybi area there are no official stargazers. People take turns when their water is due, with one or two knowledgeable people teaching the method and settling disputes.</p></div>
+</div>
+<div class="card calc reveal"><h3>How long is your share?</h3><p>Drag to choose a number of <em>āthār</em>.</p><input id="ath" type="range" min="1" max="48" value="4" aria-label="Number of athar"><div class="big" id="athO"></div><p id="athS" style="color:var(--mute)"></p></div>
+</section>
+
+<section id="fading" class="sec" data-n="IV">
+<div class="reveal"><div class="kick">IV · The Fading</div><h2>Why This Traditional Knowledge Is Disappearing</h2>
+<p>Of about fifteen <em>aflāj</em> visited in March 2005, stars were used for only one. Below, each glowing light is one falaj. Tap a light to see how few still read the stars.</p>
+<div class="dots" id="dots"></div></div>
+<div class="grid">
+<div class="card reveal"><h3>Keepers are aging</h3><p>The people who know the system are dying out, and many who remain have failing eyesight. In Mintirib, stargazing ended when its main stargazer died in 1995.</p></div>
+<div class="card reveal"><h3>Hard to learn</h3><p>The knowledge passes by word of mouth. Few are interested, and many who might have done it now have an education and seek better‑paid work.</p></div>
+<div class="card reveal"><h3>Watches arrived</h3><p>Oman opened to the outside world around 1970, and watches soon followed. In several villages stars and sun were dropped in the 1970s. On cloudy nights, even stargazing villages check watches.</p></div>
+</div>
+<div class="reveal"><h3 class="cin" style="color:var(--gold)">Turn up the lights</h3><p style="margin:.2rem 0">Light pollution is reducing the visibility of the stars. Drag to brighten the village and watch the sky fade.</p>
+<div class="dim" id="dim"><div class="glow" id="glow" style="opacity:0"></div></div><input id="lp" type="range" min="0" max="100" value="0" aria-label="Light pollution"></div></section>
+
+<section id="preserve" class="sec" data-n="V">
+<div class="reveal"><div class="kick">V · The Question</div><h2>Should We Preserve This Heritage?</h2>
+<p>All knowledge of this art may soon be lost. Researchers argue it is important to the cultural heritage of Oman and the Arabian Peninsula to record where, how, and why stars are still used. There is hope too: in Zahib, expatriate farm workers new to the village learn and use the system. No detailed knowledge of astronomy is needed, nor is reading. Experience and attentiveness to detail are enough.</p></div>
+<div class="grid">
+<div class="card reveal"><h3>Record the method</h3><p>Identify the stars and survey the walls, posts and markers used, in enough detail to replicate them even if the buildings are destroyed.</p></div>
+<div class="card reveal"><h3>Take an inventory</h3><p>A national cultural inventory of falaj systems is beyond one researcher and should be carried out by the interested ministries.</p></div>
+<div class="card reveal"><h3>Keep it living</h3><p>Stargazing can continue, apart from light pollution, if the people who use the falaj want it to.</p></div>
+</div>
+<div class="reveal card" style="text-align:center"><h3>Your answer</h3><p>Light a star if you believe this wisdom deserves to be remembered.</p>
+<div id="lantern"></div><div class="big" id="cnt">0</div><button class="btn" id="light">✦ LIGHT A STAR</button><p id="say" style="margin-top:1rem;color:var(--mute);min-height:1.6em"></p></div></section>
+
+<footer><p class="cin" style="color:var(--gold)">UNDER THE OMANI STARS</p>
+<p>Sources: Harriet Nash, “Stargazing in traditional water management: a case study in northern Oman,” <em>Proceedings of the Seminar for Arabian Studies</em> 37 (2007). Eric Staples, “Indian Ocean navigation in Islamic sources 850–1560 CE,” <em>History Compass</em> (2018). Anwar A. Aleem, “History of Arab Navigation in the Indian Ocean” (1973). Omanspire, “Mastering the Seas: Omani Maritime Navigation Techniques and Calendars Explained.”</p>
+<small>Educational summary, written in original words. Star counts and times reflect the sources’ 2005–2006 fieldwork.</small></footer>
+
+<button id="up" aria-label="Back to top">↑</button>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+/* starfield */
+const cv=$('#sky'),cx=cv.getContext('2d'),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;let W,H,S=[],sh=[],run=true,dpr=Math.min(devicePixelRatio||1,2);
+function rs(){W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);const n=Math.min(W<700?120:190,W*H/5000|0);S=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.45,p:Math.random()*6.3,s:Math.random()*.02+.004,z:Math.random()*.6+.2,c:Math.random()<.25?'255,200,140':Math.random()<.4?'190,210,255':'255,244,214'}));if(RM)f()}
+addEventListener('resize',rs);
+function f(){if(!run)return;cx.clearRect(0,0,W,H);const sy=scrollY;for(const s of S){s.p+=s.s;const a=.4+.6*Math.abs(Math.sin(s.p)),y=((s.y-sy*s.z*.2)%H+H)%H;cx.fillStyle=`rgba(${s.c},${a})`;cx.beginPath();cx.arc(s.x,y,s.r,0,6.3);cx.fill();if(s.r>1.2){cx.fillStyle=`rgba(${s.c},${a*.12})`;cx.beginPath();cx.arc(s.x,y,s.r*4,0,6.3);cx.fill()}}
+if(!RM&&sh.length<2&&Math.random()<.003)sh.push({x:Math.random()*W*.8,y:Math.random()*H*.35,l:0});
+sh=sh.filter(o=>{o.x+=10;o.y+=4.5;o.l++;const g=cx.createLinearGradient(o.x,o.y,o.x-90,o.y-40);g.addColorStop(0,`rgba(255,240,200,${1-o.l/45})`);g.addColorStop(1,'rgba(255,240,200,0)');cx.strokeStyle=g;cx.lineWidth=2;cx.beginPath();cx.moveTo(o.x,o.y);cx.lineTo(o.x-90,o.y-40);cx.stroke();return o.l<45});
+if(!RM)requestAnimationFrame(f)}
+document.addEventListener('visibilitychange',()=>{run=!document.hidden;if(run&&!RM)f()});
+rs();if(!RM)f();
+/* reveal + parallax */
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('in')}),{threshold:.12});
+$$('.reveal').forEach(e=>io.observe(e));
+const bar=$('#bar'),tp=$('.top'),up=$('#up'),mo=$('.moon'),d1=$('#d1'),d2=$('#d2');let tk=false;
+function sc(){const y=scrollY,h=document.documentElement.scrollHeight-innerHeight;bar.style.transform=`scaleX(${h>0?y/h:0})`;tp.classList.toggle('sm',y>40);up.classList.toggle('show',y>700);if(y<innerHeight*1.3){mo.style.marginTop=-y*.15+'px';d1.style.transform=`translateY(${y*.06}px)`;d2.style.transform=`translateY(${y*.03}px)`}tk=false}
+addEventListener('scroll',()=>{if(!tk){tk=true;requestAnimationFrame(sc)}},{passive:true});sc();
+/* star picker */
+const ST=[['al‑Thurayyā','The Pleiades','2 āthār: 30 + 30 min',18,30],['al‑Debrān','Aldebaran (α Tauri)','2 āthār: 35 + 35 min',32,58],['al‑Shubcha','Meissa + 2 stars in Orion','2 āthār: 20 + 30 min',48,24],['al‑Jawzaʾ','Alhena (γ Geminorum)','2 āthār: 40 + 35 min',64,52],['al‑Chūī','Vega (α Lyrae)','3 āthār: 40 + 40 + 35 min',80,28],['al‑Dhakarayn','Arcturus (α Boötis)','3 āthār: 20 + 20 + 30 min',90,64]];
+const sb=$('#skybox'),NS='http://www.w3.org/2000/svg',sbHint=sb.querySelector('span');
+{const pl=document.createElementNS(NS,'svg');pl.setAttribute('class','cl');pl.setAttribute('viewBox','0 0 100 100');pl.setAttribute('preserveAspectRatio','none');pl.innerHTML='<polyline points="'+ST.map(q=>q[3]+','+q[4]).join(' ')+'"/>';sb.prepend(pl);
+for(let i=0;i<45;i++){const d=document.createElement('i');d.className='bs';const r=Math.random()*1.8+.6;d.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*68}%;width:${r}px;height:${r}px;opacity:${.3+Math.random()*.6}`;sb.appendChild(d)}}
+function pickStar(i){const q=ST[i],m=/^(\d+) āthār: (.*)$/.exec(q[2])||['','',q[2]];
+$$('#skybox button').forEach((x,j)=>{x.classList.toggle('on',j===i);x.setAttribute('aria-pressed',j===i);x.nextElementSibling.classList.toggle('on',j===i)});
+$('#info').innerHTML=`<h3>${q[0]}</h3><p>Omani name: <strong>${q[0]}</strong><br>International name: <strong>${q[1]}</strong></p><div class="pills"><b>Marks ${m[1]} āthār</b><b>${m[2]}</b></div>`;
+if(sbHint)sbHint.textContent='✦ '+q[0]+' ✦'}
+ST.forEach((q,i)=>{const b=document.createElement('button');b.type='button';b.style.left=q[3]+'%';b.style.top=q[4]+'%';b.setAttribute('aria-label',q[0]+', '+q[1]);b.setAttribute('aria-pressed','false');b.addEventListener('click',()=>pickStar(i));
+const l=document.createElement('span');l.className='sl';l.textContent=q[0];l.style.left=q[3]+'%';l.style.top=q[4]+'%';sb.appendChild(b);sb.appendChild(l)});
+/* finger gauge */
+const fy=v=>250-v*12-8;
+$('#gTicks').innerHTML=Array.from({length:9},(_,k)=>{const v=k+3;return `<line x1="12" x2="22" y1="${fy(v)}" y2="${fy(v)}" stroke="#9fe9ff" opacity=".55"/><text x="26" y="${fy(v)+3.5}" font-size="9" fill="#9fe9ff" opacity=".7">${v}</text>`}).join('');
+$('#gStars').innerHTML=Array.from({length:34},()=>`<circle cx="${Math.random()*300|0}" cy="${Math.random()*210|0}" r="${(Math.random()*1.1+.4).toFixed(1)}" fill="#fff" opacity="${(.4+Math.random()*.5).toFixed(2)}"/>`).join('');
+function fg(){const v=+$('#fing').value,y=fy(v);
+['#pStar','#pGlow'].forEach(k=>$(k).setAttribute('cy',y));$('#pLine').setAttribute('y1',y);$('#pTxt').textContent=v+' fingers';$('#pTxt').setAttribute('y',(y+250)/2);
+$('#fTxt').textContent=v==11?'11 fingers: the Pole Star’s height at Raʾs al‑Hadd, 22.5° N, the eastern tip of Arabia.':v==3?'3 fingers: the Pole Star’s height at Cochin, southern India, about 10° N.':v+' fingers: '+(v>7?'higher in the sky means farther north.':'lower in the sky means farther south.')}
+$('#fing').addEventListener('input',fg);$('#fing').addEventListener('change',fg);fg();
+/* water steps */
+const WS=['Drinking water for people was taken first, where the water first reaches the surface just above the main settlement.','Next came animals. Open access shafts were once free for anyone to use for drinking or watering animals.','Then ritual washing at the mosque, baths, and places for washing the dead. Some people still wash and bathe in the channels.','Finally the channel divides to the fields, where date palms are probably the most important crop. Movable dams of stone, metal or cloth block some channels while others run.','Water is precious and flows continuously, so it is also shared at night. Stargazers watch star risings to time each farmer’s turn.'];
+function ws(i){$$('.steps button').forEach(x=>{const on=+x.dataset.i===i;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on)});$('#stepTxt').textContent=WS[i];$$('#zones .zn').forEach((z,j)=>z.classList.toggle('on',j===i));$('.falaj').classList.toggle('nt',i===4)}
+$$('.steps button').forEach(b=>b.addEventListener('click',()=>ws(+b.dataset.i)));ws(0);
+/* fading */
+const LD=[['al‑Chūchabayn','Hamal + Sheratan (α + β Arietis)','3','25 · 25 · 40'],['al‑Thurayyā','The Pleiades','2','30 · 30'],['al‑Debrān','Aldebaran (α Tauri)','2','35 · 35'],['al‑Shubcha','Meissa, λ + φ¹ + φ² Orionis','2','20 · 30'],['al‑Jawzaʾ','Alhena (γ Geminorum)','2','40 · 35'],['al‑Shaʿaraʾ','Procyon (α Canis Minoris)','2','30 · 50'],['al‑Janb','δ, ε + ρ Hydrae','2','20 · 30'],['al‑Dharaʿīn','Regulus + Algieba (α + γ Leonis)','2','30 · 25'],['al‑Buṭayn','Zosma (δ Leonis)','2','20 · 20'],['al‑Sufāʿ','Denebola (β Leonis)','2','30 · 50'],['al‑Mīthāb','Vindemiatrix (ε Virginis)','2','30 · 30'],['al‑Dhakarayn','Arcturus (α Boötis)','3','20 · 20 · 30'],['al‑Ghafur','Alphecca (α Coronae Borealis)','2','45 · 45'],['al‑ʿAqrab','Eltanin (γ Draconis)','3','30 · 20 · 20'],['al‑Chūī','Vega (α Lyrae)','3','40 · 40 · 35'],['al‑Mūfī','Deneb (α Cygni)','2','20 · 20'],['al‑Ghurāb','Sualocin + Rotanev (α, β Delphini)','2','40 · 35'],['al‑Adam','Enif (ε Pegasi)','2','20 · 25']];
+$('#led').innerHTML=LD.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('');
+function fmt(m){const h=m/60|0,r=m%60;return h?h+' h'+(r?' '+r+' min':''):r+' min'}
+$('#athO').insertAdjacentHTML('afterend','<div class="meter"><i id="athB"></i></div>');
+function ac(){const n=+$('#ath').value,m=n*30;$('#athO').textContent=n+(n==1?' athar':' āthār')+' ≈ '+fmt(m);$('#athB').style.width=(n/48*100)+'%';
+$('#athS').textContent='Approximate: at a nominal 30 minutes each, that is about '+fmt(m)+' ('+(m/60)+' h), or '+(m/45).toFixed(1).replace('.0','')+' sahm of 45 minutes. It is '+Math.round(n/48*100)+'% of a day of 48 āthār. At night the real slices run 20 to 50 minutes.'}
+$('#ath').addEventListener('input',ac);$('#ath').addEventListener('change',ac);ac();
+$('#dots').innerHTML=Array.from({length:15},(_,i)=>`<i class="${i==0?'lit':''}" tabindex="0"></i>`).join('');
+const dc=document.createElement('p');dc.style.color='var(--mute)';dc.textContent='One light in fifteen: the others had stopped reading the stars.';$('#dots').after(dc);
+$$('#dots i').forEach((d,i)=>d.onclick=()=>{dc.textContent=i==0?'This falaj still uses the stars: one in about fifteen visited in March 2005.':'This falaj no longer uses stars to time its water.'});
+/* light pollution */
+const D=$('#dim');for(let i=0;i<70;i++){const s=document.createElement('div');s.className='st';const r=Math.random()*2+1;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*62}%;width:${r}px;height:${r}px`;s.dataset.t=Math.random()*100;D.appendChild(s)}
+const VL=[];for(let i=0;i<16;i++){const e=document.createElement('div');e.className='vl';e.style.left=(5+i*5.8+Math.random()*3)+'%';e.style.bottom=(4+Math.random()*10)+'%';D.appendChild(e);VL.push(e)}
+$('#lp').insertAdjacentHTML('afterend','<p id="lpT" aria-live="polite"></p>');
+const DS=$$('.dim .st');
+function lp(){const v=+$('#lp').value;let vis=0;$('#glow').style.opacity=v/100;
+DS.forEach(q=>{const th=20+q.dataset.t*.8,o=Math.max(0,Math.min(1,(th-v)/20))*(1-v/300);q.style.opacity=o;if(o>.15)vis++});
+VL.forEach(e=>e.style.opacity=.1+.9*v/100);
+$('#lpT').textContent='Village lights '+v+'%: '+vis+' of '+DS.length+' stars still visible.'}
+$('#lp').addEventListener('input',lp);$('#lp').addEventListener('change',lp);lp();
+
+/* lantern */
+const KEY='omaniStarsLit',LT=$('#lantern'),M=['Every star lit is a vote for remembering.','Knowledge held by a few can be shared with many.','The stars will keep rising. Will we keep reading them?'];let n=0,ok=true;
+try{n=Math.max(0,parseInt(localStorage.getItem(KEY),10)||0)}catch(e){ok=false}
+$('#say').insertAdjacentHTML('afterend','<p id="sv" aria-live="polite"></p>');
+function addStar(pop){const q=document.createElement('div');q.className='ls'+(pop?' pop':'');q.style.left=Math.random()*92+4+'%';q.style.top=Math.random()*78+10+'%';LT.appendChild(q);while(LT.children.length>60)LT.firstChild.remove()}
+for(let i=0;i<Math.min(n,60);i++)addStar(false);$('#cnt').textContent=n;
+$('#light').addEventListener('click',()=>{n++;$('#cnt').textContent=n;addStar(true);
+try{localStorage.setItem(KEY,String(n));ok=true}catch(e){ok=false}
+$('#say').textContent=M[n%3];$('#sv').textContent=ok?'Saved on this device.':'Counting while this page is open (this browser would not save it).'});
+
+
+/* design upgrades: nav, spotlight, stagger, accessibility */
+const bg=$('.burger'),mn=$('#menu');
+bg.onclick=()=>{const o=mn.classList.toggle('open');bg.setAttribute('aria-expanded',o);bg.setAttribute('aria-label',o?'Close menu':'Open menu')};
+$$('#menu a').forEach(a=>a.addEventListener('click',()=>{mn.classList.remove('open');bg.setAttribute('aria-expanded',false)}));
+addEventListener('keydown',e=>{if(e.key=='Escape'&&mn.classList.contains('open')){mn.classList.remove('open');bg.setAttribute('aria-expanded',false);bg.focus()}});
+const so=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){$$('#menu a').forEach(a=>{const on=a.getAttribute('href')=='#'+x.target.id;a.classList.toggle('on',on);on?a.setAttribute('aria-current','true'):a.removeAttribute('aria-current')})}}),{rootMargin:'-40% 0px -55% 0px'});
+$$('section.sec').forEach(s=>so.observe(s));
+$$('.card').forEach(c=>c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px')}));
+$$('.grid').forEach(g=>[...g.children].forEach((c,i)=>c.style.transitionDelay=Math.min(i,5)*90+'ms'));
+['#info','#stepTxt','#fTxt','#athO','#cnt','#say'].forEach(s=>{const e=$(s);e&&e.setAttribute('aria-live','polite')});
+$$('#dots i').forEach((d,i)=>{d.setAttribute('role','button');d.tabIndex=0;d.setAttribute('aria-label','Falaj '+(i+1)+' of 15');d.addEventListener('keydown',e=>{if(e.key=='Enter'||e.key==' '){e.preventDefault();d.click()}})});
+$$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.getElementById(a.getAttribute('href').slice(1));if(t){e.preventDefault();t.scrollIntoView({behavior:RM?'auto':'smooth'})}}));
+$('#up').onclick=()=>scrollTo({top:0,behavior:RM?'auto':'smooth'});
+</script>
+<script id="experience-effects">
+(()=> {
+ const hero=document.querySelector('#hero');
+ if(hero && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+  hero.addEventListener('pointermove',e=>{
+   const r=hero.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+   const moon=hero.querySelector('.moon'); if(moon) moon.style.transform=`translate(${x*12}px,${y*12}px)`;
+  },{passive:true});
+  hero.addEventListener('pointerleave',()=>{const m=hero.querySelector('.moon');if(m)m.style.transform='';});
+ }
+ document.querySelectorAll('.card').forEach(card=>{
+  card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();card.style.setProperty('--spot-x',`${e.clientX-r.left}px`);card.style.setProperty('--spot-y',`${e.clientY-r.top}px`);},{passive:true});
+ });
+})();
+</script>
+</body></html>
